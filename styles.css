@@ -1054,8 +1054,25 @@ body:not([data-turn="you"]) .keypad {
 /* =====================================================
    10. SMALL SCREENS (phones)
    ===================================================== */
+
+
+
 @media (max-width: 480px) {
-  body {
+
+  /* Hide tagline and unnecessary descriptions on small screens */
+  .tagline,
+  .mode small,
+  .voice-note,
+  .maker-text small,
+  .maker-year {
+    display: none;
+  }
+
+  .avatar{
+  display: none;
+  }
+
+    body {
     padding: 16px 12px;
     align-items: flex-start;
   }
