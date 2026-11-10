@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="AFIA AMP">
+  <!-- AFIA AMP mark: a gold tile with an "A" and a spark of energy (AMP) -->
+  <rect x="3" y="3" width="58" height="58" rx="16" fill="#f2b134" stroke="#4a0f24" stroke-width="4"/>
+  <path d="M17 50 L32 13 L47 50" fill="none" stroke="#4a0f24" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M35 26 L25 39 L31.5 39 L28.5 49 L39.5 34.5 L33 34.5 Z" fill="#b5446e" stroke="#4a0f24" stroke-width="2.5" stroke-linejoin="round"/>
+</svg>

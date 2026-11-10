@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- maroon tile with a dark outline (matches the game) -->
+  <rect x="2" y="2" width="60" height="60" rx="15" fill="#7a1f3d" stroke="#4a0f24" stroke-width="4"/>
+
+  <!-- computer's speech bubble (raspberry) -->
+  <path d="M8 9 H32 A5 5 0 0 1 37 14 V28 A5 5 0 0 1 32 33 H17 L11 39 V33 H13 A5 5 0 0 1 8 28 Z"
+        fill="#b5446e" stroke="#4a0f24" stroke-width="2.5" stroke-linejoin="round"/>
+
+  <!-- player's speech bubble (gold) -->
+  <path d="M56 25 H32 A5 5 0 0 0 27 30 V45 A5 5 0 0 0 32 50 H47 L53 56 V50 H51 A5 5 0 0 0 56 45 Z"
+        fill="#f2b134" stroke="#4a0f24" stroke-width="2.5" stroke-linejoin="round"/>
+
+  <!-- "×" on the player's bubble -->
+  <g stroke="#4a0f24" stroke-width="5" stroke-linecap="round">
+    <line x1="35" y1="31" x2="47" y2="43"/>
+    <line x1="47" y1="31" x2="35" y2="43"/>
+  </g>
+
+  <!-- "+" on the computer's bubble -->
+  <g stroke="#ffffff" stroke-width="4.5" stroke-linecap="round">
+    <line x1="22.5" y1="14" x2="22.5" y2="28"/>
+    <line x1="15.5" y1="21" x2="29.5" y2="21"/>
+  </g>
+</svg>
