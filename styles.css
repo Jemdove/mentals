@@ -1,0 +1,1174 @@
+/* =====================================================
+   1. COLOURS (maroon palette, solid colours only)
+   Change these lines to re-colour the whole game.
+   ===================================================== */
+:root {
+  --page: #7a1f3d;      /* maroon page background */
+  --ink: #4a0f24;       /* dark maroon outlines and text */
+  --cream: #fff6ea;     /* the big box */
+  --white: #ffffff;
+  --soft: #fbeadf;      /* light boxes */
+
+  --pc: #b5446e;        /* computer colour (raspberry) */
+  --pc-soft: #f9e1ea;
+  --you: #2a9d8f;       /* player colour (teal) */
+  --you-soft: #dcf1ee;
+
+  --gold: #f2b134;
+  --terracotta: #e07a3f;
+  --rose: #e85d75;
+  --green: #52b788;
+  --red: #d1495b;
+  --sage: #a8c69f;
+  --lilac: #c9a7d8;
+  --blush: #f7c5cc;
+  --butter: #fde7b0;
+  --mint: #cdebd9;
+  --muted: #8c6b74;
+
+  --turn-time: 10s;     /* timer length (game.js changes this) */
+}
+
+
+/* =====================================================
+   2. PAGE
+   ===================================================== */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 24px 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-x: hidden;
+  font-family: "Fredoka", "Trebuchet MS", sans-serif;
+  text-align: center;
+  color: var(--ink);
+  background-color: var(--page);
+  -webkit-tap-highlight-color: transparent; /* no blue flash when tapping on phones */
+}
+
+.game {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 900px;
+}
+
+
+/* =====================================================
+   3. FLOATING BALLOONS AND STARS (decoration)
+   ===================================================== */
+.sky {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.float {
+  position: absolute;
+  bottom: -60px;
+  font-size: 2.5rem;
+  opacity: 0.85;
+  animation: float-up 14s linear infinite;
+}
+
+.f1 { left: 5%;  animation-delay: 0s; }
+.f2 { left: 20%; animation-delay: 5s;  font-size: 1.8rem; }
+.f3 { left: 85%; animation-delay: 2s; }
+.f4 { left: 70%; animation-delay: 8s;  font-size: 1.8rem; }
+.f5 { left: 45%; animation-delay: 11s; }
+.f6 { left: 92%; animation-delay: 7s;  font-size: 1.6rem; }
+
+@keyframes float-up {
+  0%   { transform: translateY(0) rotate(-8deg); }
+  50%  { transform: translateY(-55vh) rotate(8deg); }
+  100% { transform: translateY(-115vh) rotate(-8deg); }
+}
+
+
+/* =====================================================
+   4. SHOWING ONE SCREEN AT A TIME
+   game.js only changes data-screen on <body>.
+   ===================================================== */
+.screen {
+  display: none;
+  padding: 30px 24px;
+  background-color: var(--cream);
+  border: 5px solid var(--ink);
+  border-radius: 30px;
+  box-shadow: 0 10px 0 var(--ink);
+}
+
+[data-screen="start"] .start-screen,
+[data-screen="play"] .play-screen,
+[data-screen="over"] .over-screen {
+  display: block;
+  animation: pop-in 0.35s;
+}
+
+@keyframes pop-in {
+  0%   { transform: scale(0.9); opacity: 0; }
+  100% { transform: scale(1);   opacity: 1; }
+}
+
+
+/* =====================================================
+   5. BUTTONS (chunky cartoon style)
+   ===================================================== */
+.btn {
+  font-family: inherit;
+  font-size: 1.5rem;
+  font-weight: 700;
+  padding: 12px 24px;
+  color: var(--ink);
+  background-color: var(--green);
+  border: 4px solid var(--ink);
+  border-radius: 18px;
+  box-shadow: 0 6px 0 var(--ink);
+  cursor: pointer;
+  touch-action: manipulation; /* no zoom on quick taps */
+}
+
+.btn:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 var(--ink);
+}
+
+.btn-big {
+  font-size: 1.7rem;
+  padding: 14px 44px;
+  background-color: var(--gold);
+  animation: wiggle 2.5s infinite;
+}
+
+@keyframes wiggle {
+  0%, 85%, 100% { transform: rotate(0deg); }
+  90%           { transform: rotate(-4deg); }
+  95%           { transform: rotate(4deg); }
+}
+
+.btn-ghost {
+  background-color: var(--white);
+}
+
+
+/* =====================================================
+   6. START SCREEN
+   ===================================================== */
+.title {
+  margin: 0 0 4px;
+  font-size: 6rem;
+  line-height: 1;
+  letter-spacing: 2px;
+}
+
+/* a different colour for every letter, bouncing one after another */
+.title span {
+  display: inline-block;
+  -webkit-text-stroke: 2px var(--ink);
+  text-shadow: 0 5px 0 var(--ink);
+  animation: bounce 1.8s infinite;
+}
+
+.title span:nth-child(1) { color: var(--red);    animation-delay: 0s; }
+.title span:nth-child(2) { color: var(--terracotta); animation-delay: 0.1s; }
+.title span:nth-child(3) { color: var(--gold); animation-delay: 0.2s; }
+.title span:nth-child(4) { color: var(--green);  animation-delay: 0.3s; }
+.title span:nth-child(5) { color: var(--you);    animation-delay: 0.4s; }
+.title span:nth-child(6) { color: var(--pc);     animation-delay: 0.5s; }
+.title span:nth-child(7) { color: var(--rose);   animation-delay: 0.6s; }
+
+@keyframes bounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30%           { transform: translateY(-10px); }
+}
+
+.tagline {
+  margin: 10px 0 20px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.label {
+  margin: 0 0 12px;
+  font-size: 1.5rem;
+}
+
+/* --- choosing the game --- */
+
+/* the two hidden radio buttons for the game choice */
+.mode-radio {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.modes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.mode {
+  display: block;
+  padding: 14px 10px;
+  background-color: var(--white);
+  border: 4px solid var(--ink);
+  border-radius: 20px;
+  box-shadow: 0 5px 0 var(--ink);
+  cursor: pointer;
+  transition: transform 0.15s, background-color 0.15s;
+  margin-left: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.mode-icon {
+  display: block;
+  font-size: 1.8rem;
+}
+
+.mode b {
+  display: block;
+  font-size: 1.5rem;
+}
+
+.mode small {
+  display: block;
+  margin-top: 4px;
+  font-size: 1rem;
+  color: var(--muted);
+}
+
+/* the chosen game (pure CSS: no JS needed) */
+#modeRally:checked ~ .modes .mode-rally {
+  background-color: var(--terracotta);
+  transform: scale(1.04) rotate(-1deg);
+}
+
+#modeSums:checked ~ .modes .mode-sums {
+  color: var(--white);
+  background-color: var(--rose);
+  transform: scale(1.04) rotate(1deg);
+}
+
+#modeRally:checked ~ .modes .mode-rally small,
+#modeSums:checked ~ .modes .mode-sums small {
+  color: inherit;
+}
+
+#modeRally:focus-visible ~ .modes .mode-rally,
+#modeSums:focus-visible ~ .modes .mode-sums {
+  outline: 4px solid var(--you);
+  outline-offset: 3px;
+}
+
+/* only show the options for the chosen game */
+.options {
+  display: none;
+}
+
+#modeRally:checked ~ .rally-options,
+#modeSums:checked ~ .sums-options {
+  display: block;
+}
+
+/* --- Times Rally options --- */
+.times-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+.number-input {
+  width: 120px;
+  padding: 5px;
+  font-family: inherit;
+  font-size: 2.2rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--pc);
+  background-color: var(--pc-soft);
+  border: 4px solid var(--ink);
+  border-radius: 18px;
+}
+
+.number-input:focus {
+  outline: 4px solid var(--gold);
+}
+
+.times-sign {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+/* .quick-picks {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin: 14px 0 4px;
+} */
+
+.quick {
+  min-width: 50px;
+  padding: 8px 12px;
+  font-family: inherit;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--ink);
+  border: 3px solid var(--ink);
+  border-radius: 14px;
+  box-shadow: 0 4px 0 var(--ink);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.quick:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--ink);
+}
+
+/* rainbow quick-pick buttons */
+.quick:nth-child(7n+1) { background-color: var(--red); }
+.quick:nth-child(7n+2) { background-color: var(--terracotta); }
+.quick:nth-child(7n+3) { background-color: var(--gold); }
+.quick:nth-child(7n+4) { background-color: var(--green); }
+.quick:nth-child(7n+5) { background-color: var(--sage); }
+.quick:nth-child(7n+6) { background-color: var(--lilac); }
+.quick:nth-child(7n+7) { background-color: var(--blush); }
+
+/* --- choice buttons (sums type and level) --- */
+.picks {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.pick input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.pick span {
+  display: block;
+  padding: 10px 50px;
+  font-weight: 700;
+  background-color: var(--white);
+  border: 3px solid var(--ink);
+  border-radius: 14px;
+  box-shadow: 0 4px 0 var(--ink);
+  cursor: pointer;
+}
+
+.pick input:checked + span {
+  background-color: var(--green);
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 var(--ink);
+}
+
+.pick input:focus-visible + span {
+  outline: 4px solid var(--you);
+  outline-offset: 2px;
+}
+
+.hint {
+  margin: 8px 0 18px;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.hint b {
+  color: var(--ink);
+}
+
+/* --- talking answers on/off switch --- */
+.switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  background-color: var(--soft);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.switch input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.switch-track {
+  position: relative;
+  flex-shrink: 0;
+  width: 56px;
+  height: 32px;
+  background-color: #e6d3d8;
+  border: 3px solid var(--ink);
+  border-radius: 999px;
+  transition: background-color 0.2s;
+}
+
+/* the round knob */
+.switch-track::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  background-color: var(--white);
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+
+.switch input:checked + .switch-track {
+  background-color: var(--green);
+}
+
+.switch input:checked + .switch-track::after {
+  transform: translateX(24px);
+}
+
+.switch input:focus-visible + .switch-track {
+  outline: 3px solid var(--you);
+  outline-offset: 2px;
+}
+
+.switch-text {
+  text-align: left;
+  font-weight: 700;
+}
+
+/* "needs Chrome or Edge" note: only when the browser can't do voice */
+.voice-note {
+  display: none;
+  margin: 6px 0 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--red);
+}
+
+[data-voice-support="no"] .voice-note {
+  display: block;
+}
+
+[data-voice-support="no"] .switch {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.best-line {
+  margin: 16px 0 20px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.best-line strong {
+  color: var(--terracotta);
+  font-size: 1.2rem;
+}
+
+.start-error {
+  margin: 16px 0 0;
+  padding: 10px;
+  font-weight: 700;
+  color: var(--white);
+  background-color: var(--red);
+  border-radius: 14px;
+}
+
+.start-error:empty {
+  display: none;
+}
+
+
+/* =====================================================
+   7. GAME SCREEN
+   ===================================================== */
+.scoreboard {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.pill {
+  padding: 8px 16px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border: 3px solid var(--ink);
+  border-radius: 999px;
+}
+
+.pill-game {
+  color: var(--white);
+  background-color: var(--pc);
+}
+
+.pill-score {
+  background-color: var(--gold);
+}
+
+/* --- Pause and End game buttons --- */
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.btn-small {
+  font-size: 1.1rem;
+  padding: 6px 18px;
+  border-width: 3px;
+  border-radius: 14px;
+  box-shadow: 0 4px 0 var(--ink);
+  background-color: var(--butter);
+}
+
+.btn-small:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--ink);
+}
+
+.btn-end {
+  background-color: var(--blush);
+}
+
+/* hidden for a moment after a wrong answer (the game is ending) */
+body:not([data-turn="pc"]):not([data-turn="you"]) .controls {
+  visibility: hidden;
+}
+
+/* --- the cover shown while paused (game.js sets data-paused on <body>) --- */
+.play-screen {
+  position: relative;
+}
+
+.pause-cover {
+  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 24px;
+  background-color: var(--cream);
+  border-radius: 25px;
+}
+
+[data-paused="yes"] .pause-cover {
+  display: flex;
+  animation: pop-in 0.25s;
+}
+
+.pause-title {
+  margin: 0;
+  font-size: 3rem;
+  font-weight: 700;
+}
+
+.pause-text {
+  margin: 0 0 6px;
+  font-size: 1.2rem;
+  color: var(--muted);
+}
+
+/* the timer bar stops shrinking while paused */
+[data-paused="yes"] .timer-bar.running {
+  animation-play-state: paused;
+}
+
+/* "Superstar zone" message: only when game.js sets data-superstar */
+.superstar {
+  display: none;
+  margin: 0 0 14px;
+  padding: 8px;
+  font-weight: 700;
+  background-color: var(--gold);
+  border: 3px solid var(--ink);
+  border-radius: 14px;
+  animation: bounce 1.2s infinite;
+}
+
+[data-superstar="yes"] .superstar {
+  display: block;
+}
+
+.players {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.player {
+  position: relative;
+  min-width: 0;
+  padding: 14px 8px 10px;
+  border: 4px solid transparent;
+  border-radius: 22px;
+  opacity: 0.6;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.pc {
+  background-color: var(--pc-soft);
+}
+
+.you {
+  background-color: var(--you-soft);
+}
+
+/* light up whoever's turn it is (game.js sets data-turn on <body>) */
+[data-turn="pc"] .pc {
+  opacity: 1;
+  border-color: var(--pc);
+  transform: scale(1.03);
+}
+
+[data-turn="you"] .you,
+[data-turn="wrong"] .you {
+  opacity: 1;
+  border-color: var(--you);
+  transform: scale(1.03);
+}
+
+/* keep the computer's question easy to read on your turn */
+[data-turn="you"] .pc {
+  opacity: 0.95;
+}
+
+.avatar {
+  font-size: 2.8rem;
+  line-height: 1;
+}
+
+[data-turn="pc"] .pc .avatar,
+[data-turn="you"] .you .avatar {
+  animation: bounce 1s infinite;
+}
+
+.name {
+  margin: 4px 0 8px;
+  font-weight: 700;
+}
+
+.bubble {
+  min-height: 72px;
+  padding: 0 6px;
+  line-height: 66px;
+  font-size: 2.6rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background-color: var(--white);
+  border: 3px solid var(--ink);
+  border-radius: 18px;
+}
+
+/* long numbers or sums get a smaller font (game.js adds "long") */
+.bubble.long {
+  font-size: 1.7rem;
+}
+
+.pc .bubble {
+  color: var(--pc);
+}
+
+.you .bubble {
+  color: var(--you);
+}
+
+/* small "7 × 3" line under the bubble */
+.caption {
+  min-height: 1.4em;
+  margin: 6px 0 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+/* a new number "pops" in */
+.bubble.pop {
+  animation: pop 0.35s;
+}
+
+@keyframes pop {
+  0%   { transform: scale(0.6); }
+  70%  { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+/* correct answer: "+1 ⭐" floats up (game.js adds "scored") */
+.you.scored::after {
+  content: "+1 ⭐";
+  position: absolute;
+  top: -10px;
+  right: 10px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--terracotta);
+  animation: star-up 0.9s forwards;
+}
+
+@keyframes star-up {
+  0%   { opacity: 1; transform: translateY(0) scale(0.8); }
+  100% { opacity: 0; transform: translateY(-40px) scale(1.3); }
+}
+
+/* wrong answer: your bubble turns red and shakes */
+[data-turn="wrong"] .you .bubble {
+  color: var(--red);
+  border-color: var(--red);
+  animation: shake 0.4s;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25%      { transform: translateX(-8px); }
+  75%      { transform: translateX(8px); }
+}
+
+.turn-text {
+  min-height: 1.5em;
+  margin: 16px 0 10px;
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+/* timer: a bar that shrinks from full to empty */
+.timer {
+  height: 18px;
+  margin-bottom: 14px;
+  overflow: hidden;
+  background-color: var(--soft);
+  border: 3px solid var(--ink);
+  border-radius: 999px;
+}
+
+.timer-bar {
+  height: 100%;
+  background-color: var(--green);
+  transform-origin: left;
+  transform: scaleX(0);
+}
+
+.timer-bar.running {
+  animation: countdown var(--turn-time) linear forwards;
+}
+
+@keyframes countdown {
+  0%   { transform: scaleX(1); background-color: var(--green); }
+  60%  { background-color: var(--gold); }
+  100% { transform: scaleX(0); background-color: var(--red); }
+}
+
+/* talking-answer status line: only when talking answers are on */
+.voice-status {
+  display: none;
+  margin: 0 0 12px;
+  padding: 8px 12px;
+  font-weight: 700;
+  color: var(--muted);
+  background-color: var(--soft);
+  border-radius: 14px;
+}
+
+[data-voice="on"] .voice-status {
+  display: block;
+}
+
+/* glowing while the game is listening for your answer */
+[data-listening="yes"] .voice-status {
+  color: var(--white);
+  background-color: var(--green);
+  animation: listening 1.2s infinite;
+}
+
+@keyframes listening {
+  0%   { box-shadow: 0 0 0 0 rgba(82, 183, 136, 0.7); }
+  100% { box-shadow: 0 0 0 14px rgba(82, 183, 136, 0); }
+}
+
+.answer-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.answer {
+  flex: 1;
+  min-width: 0;
+  padding: 8px;
+  font-family: inherit;
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--you);
+  background-color: var(--white);
+  border: 4px solid var(--ink);
+  border-radius: 18px;
+}
+
+.answer:focus {
+  outline: 4px solid var(--gold);
+}
+
+.answer::placeholder {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #c4a9b0;
+}
+
+.btn-go {
+  background-color: var(--green);
+}
+
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.key {
+  padding: 12px 0;
+  font-family: inherit;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--ink);
+  border: 3px solid var(--ink);
+  border-radius: 16px;
+  box-shadow: 0 5px 0 var(--ink);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.key:active,
+.key.pressed {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 var(--ink);
+}
+
+/* "pressed" is added for a moment when the same key is pressed on the keyboard */
+.key.pressed {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* candy-coloured number keys */
+.key:nth-child(3n+1) { background-color: var(--blush); }
+.key:nth-child(3n+2) { background-color: var(--butter); }
+.key:nth-child(3n+3) { background-color: var(--mint); }
+
+.key-del {
+  color: var(--white);
+  background-color: var(--red) !important;
+}
+
+/* Go stretches across the whole bottom row */
+.key-go {
+  grid-column: 1 / -1;
+  background-color: var(--green) !important;
+}
+
+/* the − key (makes your answer negative) */
+.key-neg {
+  color: var(--white);
+  background-color: var(--pc) !important;
+}
+
+/* games with no negative answers: hide the − key, keep 0 in the middle */
+[data-negatives="no"] .key-neg {
+  display: none;
+}
+
+[data-negatives="no"] .key-zero {
+  grid-column: 2;
+}
+
+/* answer box and keypad only work on your turn */
+body:not([data-turn="you"]) .answer-form,
+body:not([data-turn="you"]) .keypad {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* the list of answers so far */
+.rally-log {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 18px;
+}
+
+.rally-log:empty::before {
+  content: "Your answers will show here ✏️";
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+.chip {
+  padding: 4px 10px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+}
+
+.chip-pc {
+  color: var(--pc);
+  background-color: var(--pc-soft);
+}
+
+.chip-you {
+  color: var(--you);
+  background-color: var(--you-soft);
+}
+
+.chip-wrong {
+  color: var(--white);
+  background-color: var(--red);
+  text-decoration: line-through;
+}
+
+
+/* =====================================================
+   8. GAME OVER SCREEN
+   ===================================================== */
+.over-title {
+  margin: 0 0 8px;
+  font-size: 2.8rem;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+  color: var(--red);
+  -webkit-text-stroke: 1.5px var(--ink);
+  text-shadow: 0 4px 0 var(--ink);
+}
+
+/* big scores: "Congratulations!" in rainbow colours */
+.cheer .over-title {
+  color: var(--gold);
+  animation: bounce 1.2s infinite;
+}
+
+.over-reason {
+  margin: 0 0 20px;
+  font-size: 1.15rem;
+  line-height: 1.5;
+}
+
+.over-reason b {
+  color: var(--pc);
+}
+
+/* the score inside a big yellow circle */
+.final {
+  width: 190px;
+  height: 190px;
+  margin: 0 auto 16px;
+  padding-top: 30px;
+  background-color: var(--gold);
+  border: 5px solid var(--ink);
+  border-radius: 50%;
+  box-shadow: 0 8px 0 var(--ink);
+}
+
+.final p {
+  margin: 0;
+  font-weight: 700;
+}
+
+.final strong {
+  display: block;
+  font-size: 4rem;
+  line-height: 1.1;
+}
+
+/* "New best!" only shows when game.js adds class "got-best" */
+.new-best {
+  display: none;
+  font-size: 0.95rem;
+}
+
+.got-best .new-best {
+  display: block;
+}
+
+.over-screen .btn {
+  display: block;
+  width: 100%;
+  margin-top: 14px;
+}
+
+
+/* =====================================================
+   9. CONFETTI (pieces are made by game.js)
+   ===================================================== */
+.confetti {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.piece {
+  position: absolute;
+  top: -20px;
+  width: 12px;
+  height: 18px;
+  border-radius: 3px;
+  animation: fall 3s linear forwards;
+}
+
+@keyframes fall {
+  0%   { transform: translateY(0) rotate(0deg); }
+  100% { transform: translateY(110vh) rotate(720deg); }
+}
+
+
+/* =====================================================
+   10. SMALL SCREENS (phones)
+   ===================================================== */
+@media (max-width: 480px) {
+  body {
+    padding: 16px 12px;
+    align-items: flex-start;
+  }
+
+  .screen {
+    padding: 22px 14px;
+    border-width: 4px;
+  }
+
+  .title {
+    font-size: 3rem;
+  }
+
+  .mode b {
+    font-size: 1.05rem;
+  }
+
+  .mode small {
+    font-size: 0.78rem;
+  }
+
+  .avatar {
+    font-size: 2.2rem;
+  }
+
+  .bubble {
+    min-height: 60px;
+    line-height: 54px;
+    font-size: 2.1rem;
+  }
+
+  .bubble.long {
+    font-size: 1.35rem;
+  }
+
+  .turn-text {
+    font-size: 1.15rem;
+  }
+
+  .over-title {
+    font-size: 2rem;
+  }
+
+  .key {
+    padding: 10px 0;
+    font-size: 1.4rem;
+  }
+
+  .float {
+    font-size: 1.8rem;
+  }
+}
+
+/* people who switch off motion in their settings get a calm page */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  .timer-bar.running {
+    animation-duration: var(--turn-time) !important;
+  }
+}
+
+
+/* =====================================================
+   MAKER'S BADGE (AFIA AMP) under the game box
+   ===================================================== */
+.maker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 26px;
+  color: var(--cream);
+}
+
+.maker-mark {
+  width: 46px;
+  height: 46px;
+}
+
+.maker-text {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  line-height: 1.05;
+  text-align: left;
+}
+
+.maker-text small {
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.maker-text strong {
+  font-size: 1.45rem;
+  letter-spacing: 0.12em;
+}
+
+.maker-text span {
+  color: var(--gold);
+}
+
+.maker-year {
+  margin: 0;
+  padding-left: 12px;
+  font-size: 0.9rem;
+  opacity: 0.75;
+  border-left: 2px solid rgb(255 255 255 / 0.3);
+}

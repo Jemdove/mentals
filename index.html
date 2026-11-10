@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mentals · by AFIA AMP</title>
+  <meta name="author" content="AFIA AMP">
+
+  <!-- Game icon in the browser tab -->
+  <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<!-- data-screen decides which screen is showing (start, play or over).
+     The showing and hiding is done in styles.css. -->
+<body data-screen="start">
+
+  <!-- =========================================================
+       BACKGROUND MUSIC: PUT YOUR MUSIC FILE HERE
+       1. Put your song in the "sounds" folder
+       2. Name it: background-music.mp3
+          (or change the src below to your file's name)
+       The music starts when the player presses Start.
+       ========================================================= -->
+  <audio id="bgMusic" src="sounds/Digital Soul.mpga" loop></audio>
+
+
+  <!-- Floating balloons and stars in the background (just decoration) -->
+  <div class="sky" aria-hidden="true">
+    <span class="float f1">🎈</span>
+    <span class="float f2">⭐</span>
+    <span class="float f3">🎈</span>
+    <span class="float f4">✨</span>
+    <span class="float f5">🎈</span>
+    <span class="float f6">⭐</span>
+  </div>
+
+  <!-- Confetti appears here for big scores (made by game.js) -->
+  <div id="confetti" class="confetti" aria-hidden="true"></div>
+
+
+  <main class="game">
+
+    <!-- =====================================================
+         1. START SCREEN
+         ===================================================== -->
+    <section class="screen start-screen">
+
+      <!-- each letter gets its own colour in styles.css -->
+      <h1 class="title" aria-label="Mentals">
+        <span>M</span><span>e</span><span>n</span><span>t</span><span>a</span><span>l</span><span>s</span>
+      </h1>
+
+      <p class="tagline">Quick-fire mental maths. <br>One wrong answer, or too slow, and it's game over!</p>
+
+      <!-- The two game choices. The radios sit here (hidden) so that
+           styles.css can show the right options below without JS. -->
+      <input type="radio" name="mode" id="modeRally" class="mode-radio" value="rally" checked>
+      <input type="radio" name="mode" id="modeSums" class="mode-radio" value="sums">
+
+      <h2 class="label">Pick a game</h2>
+
+      <div class="modes">
+        <label for="modeRally" class="mode mode-rally">
+          <b> ✖️ Times Rally</b>
+          <small>Take turns multiplying with the computer</small>
+        </label>
+
+        <label for="modeSums" class="mode mode-sums">
+          <b> ➕➖➗ Quick Sums</b>
+          <small>Add, take away and divide random numbers</small>
+        </label>
+      </div>
+
+
+      <!-- Options for Times Rally (shown when Times Rally is picked) -->
+      <div class="options rally-options">
+        <h2 class="label">Choose any whole number from 1 to 1000 </h2>
+
+        <div class="times-box">
+          <input id="tableInput" class="number-input" type="number" min="1" max="1000" step="1"
+                 value="2" inputmode="numeric" aria-label="Number to multiply">
+          <span class="times-sign">× 1, 2, 3 …</span> 
+        </div> <br>
+
+        <!-- <div class="quick-picks">
+          <button type="button" class="quick" data-number="2">2</button>
+          <button type="button" class="quick" data-number="3">3</button>
+          <button type="button" class="quick" data-number="4">4</button>
+          <button type="button" class="quick" data-number="5">5</button>
+          <button type="button" class="quick" data-number="7">7</button>
+          <button type="button" class="quick" data-number="9">9</button>
+          <button type="button" class="quick" data-number="12">12</button>
+        </div> -->
+
+        <!-- <p class="hint">
+          Choose any whole number from 1 to 1000!<br>
+        </p> -->
+      </div>
+
+
+      <!-- Options for Quick Sums (shown when Quick Sums is picked) -->
+      <div class="options sums-options">
+        <h2 class="label">Which sums?</h2>
+
+        <div class="picks">
+          <label class="pick">
+            <input type="radio" name="op" value="add" checked>
+            <span>➕ Adding</span>
+          </label>
+
+          <label class="pick">
+            <input type="radio" name="op" value="sub">
+            <span>➖ Taking away</span>
+          </label>
+
+          <label class="pick">
+            <input type="radio" name="op" value="div">
+            <span>➗ Dividing</span>
+          </label>
+
+          <label class="pick">
+            <input type="radio" name="op" value="mix">
+            <span>Mix</span>
+          </label>
+        </div>
+
+
+        <!-- Negative numbers on/off (adding and taking away only) -->
+        <label class="switch">
+          <input type="checkbox" id="negToggle" checked>
+          <span class="switch-track"></span>
+          <span class="switch-text">➖ Use negative numbers</span>
+        </label>
+      </div>
+
+
+      <!-- Level (for both games) -->
+      <h2 class="label">Difficulty</h2>
+
+      <div class="picks">
+        <label class="pick">
+          <input type="radio" name="level" value="easy" checked>
+          <span>Easy</span>
+        </label>
+
+        <label class="pick">
+          <input type="radio" name="level" value="medium">
+          <span>Medium</span>
+        </label>
+
+        <label class="pick">
+          <input type="radio" name="level" value="hard">
+          <span>Hard</span>
+        </label>
+      </div>
+
+      <p id="levelHint" class="hint">10 seconds for each answer.</p>
+
+
+      <!-- Voice answers (an on/off switch, styled in styles.css) -->
+      <label class="switch">
+        <input type="checkbox" id="voiceToggle">
+        <span class="switch-track"></span>
+        <span class="switch-text">🎤 Say my answers out loud</span>
+      </label>
+      <p class="voice-note">Talking answers need Google Chrome or Microsoft Edge.</p>
+
+      <p class="best-line">
+        🏆 Best for <span class="game-label">×2</span>:
+        <strong id="bestStart">0</strong>
+      </p>
+
+      <button type="button" id="startBtn" class="btn btn-big">▶ Let's Go!</button>
+
+      <!-- shows a message if the number typed above can't be used -->
+      <p id="startError" class="start-error"></p>
+    </section>
+
+
+    <!-- =====================================================
+         2. GAME SCREEN
+         ===================================================== -->
+    <section class="screen play-screen">
+
+      <div class="scoreboard">
+        <span class="pill pill-game"><strong class="game-label">×2</strong></span>
+        <span class="pill pill-score">⭐ <strong id="score">0</strong></span>
+      </div>
+
+      <!-- Pause and End game (hidden for a moment after a wrong answer) -->
+      <div class="controls">
+        <button type="button" id="pauseBtn" class="btn btn-small" title="Pause (Esc)">⏸ Pause</button>
+        <button type="button" class="btn btn-small btn-end end-btn">⏹ End game</button>
+      </div>
+
+      <!-- shows when the score is high enough for congratulations -->
+      <p class="superstar">🌟 Superstar zone! Keep going! 🌟</p>
+
+      <!-- data-turn on <body> lights up whose turn it is -->
+      <div class="players">
+        <div class="player pc">
+          <div class="avatar">🤖</div>
+          <p class="name">Computer</p>
+          <div id="pcBubble" class="bubble">–</div>
+          <p id="pcCaption" class="caption"></p>
+        </div>
+
+        <div class="player you">
+          <div class="avatar">🧒🏾</div>
+          <p class="name">You</p>
+          <div id="youBubble" class="bubble">?</div>
+          <p id="youCaption" class="caption"></p>
+        </div>
+      </div>
+
+      <p id="turnText" class="turn-text">Get ready…</p>
+
+      <!-- Timer bar (it shrinks using a CSS animation) -->
+      <div class="timer">
+        <div id="timerBar" class="timer-bar"></div>
+      </div>
+
+      <!-- Only shows when talking answers are on -->
+      <p id="voiceStatus" class="voice-status">🎤 Wait for the computer…</p>
+
+      <!-- Answer box: type with the keyboard (Enter = Go, − = negative), or use the number pad -->
+      <form id="answerForm" class="answer-form">
+        <input id="answer" class="answer" type="text" inputmode="none"
+               autocomplete="off" maxlength="8" placeholder="Your answer">
+        <button type="submit" class="btn btn-go">Go</button>
+      </form>
+
+      <!-- Number pad for phones -->
+      <div class="keypad">
+        <button type="button" class="key" data-key="1">1</button>
+        <button type="button" class="key" data-key="2">2</button>
+        <button type="button" class="key" data-key="3">3</button>
+        <button type="button" class="key" data-key="4">4</button>
+        <button type="button" class="key" data-key="5">5</button>
+        <button type="button" class="key" data-key="6">6</button>
+        <button type="button" class="key" data-key="7">7</button>
+        <button type="button" class="key" data-key="8">8</button>
+        <button type="button" class="key" data-key="9">9</button>
+        <button type="button" class="key key-neg" data-key="neg" aria-label="Make negative">−</button>
+        <button type="button" class="key key-zero" data-key="0">0</button>
+        <button type="button" class="key key-del" data-key="del">⌫</button>
+        <button type="button" class="key key-go" data-key="go">Go</button>
+      </div>
+
+      <!-- Everything answered so far -->
+      <div id="rallyLog" class="rally-log"></div>
+
+      <!-- Covers the game while it is paused (shown by styles.css) -->
+      <div class="pause-cover">
+        <p class="pause-title">⏸ Paused</p>
+        <p class="pause-text">Take a break! The timer has stopped.</p>
+        <button type="button" id="resumeBtn" class="btn btn-big">▶ Keep Playing</button>
+        <button type="button" class="btn btn-ghost end-btn">⏹ End game</button>
+      </div>
+    </section>
+
+
+    <!-- =====================================================
+         3. GAME OVER SCREEN
+         ===================================================== -->
+    <section id="overScreen" class="screen over-screen">
+      <h2 id="overTitle" class="over-title">Game Over!</h2>
+
+      <p id="overReason" class="over-reason"></p>
+
+      <div class="final">
+        <p>Your score</p>
+        <strong id="finalScore">0</strong>
+        <p class="new-best">🏆 New best!</p>
+      </div>
+
+      <p class="best-line">
+        🏆 Best for <span class="game-label">×2</span>:
+        <strong id="bestOver">0</strong>
+      </p>
+
+      <button type="button" id="againBtn" class="btn btn-big">↻ Play Again</button>
+      <button type="button" id="changeBtn" class="btn btn-ghost">Change Game</button>
+    </section>
+
+    <!-- =====================================================
+         MAKER'S BADGE: shows the game is made by AFIA AMP
+         (styled in styles.css, section "MAKER'S BADGE")
+         ===================================================== -->
+    <footer class="maker">
+      <img class="maker-mark" src="images/afia-amp-mark.svg" alt="">
+      <p class="maker-text">
+        <small>Made by</small>
+        <strong>AFIA <span>AMP</span></strong>
+      </p>
+      <p class="maker-year">© 2026</p>
+    </footer>
+
+  </main>
+
+  <script src="game.js"></script>
+</body>
+
+</html>
