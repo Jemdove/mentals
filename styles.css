@@ -1124,6 +1124,33 @@ body:not([data-turn="you"]) .keypad {
   .float {
     font-size: 1.8rem;
   }
+  
+  /* Smaller choice buttons: Adding / Taking away / Dividing / Mix show 2 per row,
+     Easy / Medium / Hard show 3 in one row */
+  .picks {
+    gap: 6px;
+  }
+
+  .pick {
+    flex: 1 1 28%;
+    min-width: 0;
+  }
+
+  .sums-options .pick {
+    flex-basis: 40%;
+  }
+
+  .pick span {
+    padding: 8px 4px;
+    font-size: 0.95rem;
+    line-height: 1.2;
+    border-width: 2px;
+    box-shadow: 0 3px 0 var(--ink);
+  }
+
+  .pick input:checked + span {
+    box-shadow: 0 1px 0 var(--ink);
+  }
 }
 
 /* people who switch off motion in their settings get a calm page */
